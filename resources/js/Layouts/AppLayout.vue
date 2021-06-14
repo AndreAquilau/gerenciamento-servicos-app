@@ -222,7 +222,11 @@ import { Inertia } from '@inertiajs/inertia'
                 this.$inertia.post(route('logout'));
             },
             dashboardPage() {
-                Inertia.get(this.route('dashboard'));
+                Inertia.get(this.route('dashboard'), {
+                    empresa_id: this.$inertia.page.props.user.empresa_id,
+                    user_id: this.$inertia.page.props.user.id,
+                }
+                );
             },
             colaboradorPage() {
                 Inertia.get(this.route('colaboradores'), {

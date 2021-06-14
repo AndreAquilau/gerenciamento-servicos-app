@@ -32,7 +32,7 @@ import Calendar from 'primevue/calendar';
 import AutoComplete from 'primevue/autocomplete';
 import Card from 'primevue/card';
 import Editor from 'primevue/editor';
-import Chart from 'primevue/card';
+import Chart from 'primevue/chart';
 
 import 'primevue/resources/themes/saga-blue/theme.css';
 import 'primevue/resources/primevue.min.css';

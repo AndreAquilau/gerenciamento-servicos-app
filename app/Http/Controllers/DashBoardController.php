@@ -8,6 +8,8 @@ use App\Models\User;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\DB;
 use Redirect;
+use App\Models\Contrato;
+use App\Models\Acerto;
 
 class DashBoardController extends Controller
 {
@@ -26,9 +28,69 @@ class DashBoardController extends Controller
      * @param  \Illuminate\Http\Request  $request () -> request: {empresa_id: "3", user_id: "2"}
      * @return \Illuminate\Http\Response
      */
-    public function renderPage(Request $request)
+    public function renderPage(Request $query)
     {
-        return $this->view("Dashboard", ["teste" => $request]);
+        $contratosAprovados = DB::table('users')
+        ->join('contratos', 'users.id', '=', 'contratos.user_id')
+        ->join('empresas', 'users.empresa_id', '=', 'empresas.id')
+        ->join('correntistas', 'contratos.correntista_id', '=', 'correntistas.id')
+        ->join('colaboradors', 'contratos.colaborador_id', '=', 'colaboradors.id')
+        ->where([
+            ['empresas.id', '=', $query['empresa_id']],
+        ])
+        ->where([
+            ['contratos.status', '=', 1],
+        ])
+        ->get();
+
+        $contratosPendentes = DB::table('users')
+        ->join('contratos', 'users.id', '=', 'contratos.user_id')
+        ->join('empresas', 'users.empresa_id', '=', 'empresas.id')
+        ->join('correntistas', 'contratos.correntista_id', '=', 'correntistas.id')
+        ->join('colaboradors', 'contratos.colaborador_id', '=', 'colaboradors.id')
+        ->where([
+            ['empresas.id', '=', $query['empresa_id']],
+        ])
+        ->where([
+            ['contratos.status', '=', 0],
+        ])
+        ->get();
+
+        $comissoesPagas = DB::table('users')
+        ->join('contratos', 'users.id', '=', 'contratos.user_id')
+        ->join('empresas', 'users.empresa_id', '=', 'empresas.id')
+        ->join('correntistas', 'contratos.correntista_id', '=', 'correntistas.id')
+        ->join('colaboradors', 'contratos.colaborador_id', '=', 'colaboradors.id')
+        ->join('acertos', 'contratos.id', '=', 'acertos.contrato_id')
+        ->where([
+            ['empresas.id', '=', $query['empresa_id']],
+        ])
+        ->where([
+            ['acertos.status', '=', 1],
+        ])
+        ->get();
+
+        $comissoesAPagar = DB::table('users')
+        ->join('contratos', 'users.id', '=', 'contratos.user_id')
+        ->join('empresas', 'users.empresa_id', '=', 'empresas.id')
+        ->join('correntistas', 'contratos.correntista_id', '=', 'correntistas.id')
+        ->join('colaboradors', 'contratos.colaborador_id', '=', 'colaboradors.id')
+        ->join('acertos', 'contratos.id', '=', 'acertos.contrato_id')
+        ->where([
+            ['empresas.id', '=', $query['empresa_id']],
+        ])
+        ->where([
+            ['acertos.status', '=', 0],
+        ])
+        ->get();
+
+        return $this->view("Dashboard", [
+            "query" => $query,
+            "contratosAprovados" => $contratosAprovados,
+            "contratosPendentes" => $contratosPendentes,
+            "comissoesPagas" => $comissoesPagas,
+            "comissoesAPagar" => $comissoesAPagar
+        ]);
     }
 
     public function findAllByEmpresa($request) {
