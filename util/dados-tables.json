@@ -1,0 +1,32 @@
+[
+	{
+		"Tables_in_dados" : "correntistas"
+	},
+	{
+		"Tables_in_dados" : "failed_jobs"
+	},
+	{
+		"Tables_in_dados" : "migrations"
+	},
+	{
+		"Tables_in_dados" : "password_resets"
+	},
+	{
+		"Tables_in_dados" : "personal_access_tokens"
+	},
+	{
+		"Tables_in_dados" : "sessions"
+	},
+	{
+		"Tables_in_dados" : "team_invitations"
+	},
+	{
+		"Tables_in_dados" : "team_user"
+	},
+	{
+		"Tables_in_dados" : "teams"
+	},
+	{
+		"Tables_in_dados" : "users"
+	}
+]
