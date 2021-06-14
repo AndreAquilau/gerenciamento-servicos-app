@@ -9,7 +9,7 @@
             ref="dt" :value="usuarios" v-model:selection="selectedUsuarios" dataKey="id"
             :paginator="true" :rows="10" :filters="filters"
             paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown" :rowsPerPageOptions="[5,10,25]"
-            currentPageReportTemplate="Showing {first} to {last} of {totalRecords} usuarios">
+            currentPageReportTemplate="Mostrando {first} para {last} de {totalRecords} usuários">
             <Toast position="top-right" />
             <Toolbar class="p-mb-4">
                 <template #left>
@@ -19,7 +19,7 @@
                 <template #right>
                     <span class="p-input-icon-left">
                         <i class="pi pi-search" />
-                        <InputText v-model="filters['global']" placeholder="Search..." />
+                        <InputText v-model="filters['global'].value" placeholder="Pesquise..." />
                     </span>
                 </template>
             </Toolbar>
@@ -123,6 +123,7 @@ import JetCheckbox from "@/Jetstream/Checkbox";
 import JetLabel from '@/Jetstream/Label'
 import JetValidationErrors from '@/Jetstream/ValidationErrors'
 import { Inertia } from '@inertiajs/inertia';
+import { FilterMatchMode } from 'primevue/api';
 
 const usuarioValueDefault = {
     "id": null,
@@ -234,11 +235,17 @@ export default {
     created() {
         console.log("props", this.$inertia.page.props);
         this.usuarios = this.$inertia.page.props.usuariosAll;
+        this.initFilters();
     },
     mounted() {
         console.log(this.$inertia.page.props.user);
     },
     methods: {
+        initFilters() {
+            this.filters = {
+                'global': {value: null, matchMode: FilterMatchMode.CONTAINS},
+            }
+        },
         formatCurrency(value) {
             return value.toLocaleString('en-US', {style: 'currency', currency: 'USD'});
         },

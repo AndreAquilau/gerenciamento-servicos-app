@@ -3,7 +3,7 @@
         <DataTable ref="dt" :value="colaboradores" v-model:selection="selectedColaboradores" dataKey="id"
             :paginator="true" :rows="10" :filters="filters"
             paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown" :rowsPerPageOptions="[5,10,25]"
-            currentPageReportTemplate="Showing {first} to {last} of {totalRecords} colaboradores">
+            currentPageReportTemplate="Mostrando {first} para {last} de {totalRecords} colaboradores">
             <Toast position="top-right" />
             <Toolbar class="p-mb-4">
                 <template #left>
@@ -14,7 +14,7 @@
                 <template #right >
                     <span class="p-input-icon-left">
                         <i class="pi pi-search" />
-                        <InputText v-model="filters['global']" placeholder="Search..." />
+                        <InputText v-model="filters['global'].value" placeholder="Pesquise..." />
                     </span>
                     <div>
                         <Button label="Novo" icon="pi pi-plus" class="p-button-success p-mr-2" @click="openNew" />
@@ -135,6 +135,7 @@ import JetNavLink from '@/Jetstream/NavLink';
 import JetResponsiveNavLink from '@/Jetstream/ResponsiveNavLink';
 import { Inertia } from '@inertiajs/inertia';
 import { validateUserAuth } from '../Auth';
+import { FilterMatchMode } from 'primevue/api';
 
 const colaboradorValueDefault = {
     "id": 0,
@@ -217,11 +218,17 @@ export default {
         validateUserAuth(Inertia, this.$props.query, () => {
             this.colaboradores = this.$props.colaboradoresAllByEmpresa;
         });
+        this.initFilters();
     },
     mounted() {
         validateUserAuth(Inertia, this.$props.query);
     },
     methods: {
+        initFilters() {
+            this.filters = {
+                'global': {value: null, matchMode: FilterMatchMode.CONTAINS},
+            }
+        },
         formatCurrency(value) {
             return value.toLocaleString('en-US', {style: 'currency', currency: 'USD'});
         },

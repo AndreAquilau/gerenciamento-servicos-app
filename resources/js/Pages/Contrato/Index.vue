@@ -3,7 +3,7 @@
         <DataTable ref="dt" :value="contratos" v-model:selection="selectedContratos" dataKey="id"
             :paginator="true" :rows="10" :filters="filters"
             paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown" :rowsPerPageOptions="[5,10,25]"
-            currentPageReportTemplate="Showing {first} to {last} of {totalRecords} contratos">
+            currentPageReportTemplate="Mostrando {first} para {last} de {totalRecords} contratos">
             <Toast position="top-right" />
             <Toolbar class="p-mb-4">
                 <template #left>
@@ -14,7 +14,7 @@
                 <template #right >
                     <span class="p-input-icon-left">
                         <i class="pi pi-search" />
-                        <InputText v-model="filters['global']" placeholder="Search..." />
+                        <InputText v-model="filters['global'].value" placeholder="Pesquise..." />
                     </span>
                     <div>
                         <Button label="Novo" icon="pi pi-plus" class="p-button-success p-mr-2" @click="novoContrato()" />
@@ -81,6 +81,7 @@ import JetResponsiveNavLink from '@/Jetstream/ResponsiveNavLink'
 import moment from 'moment';
 import { Inertia } from '@inertiajs/inertia'
 import { validateUserAuth } from '../Auth';
+import { FilterMatchMode } from 'primevue/api';
 
 export default {
     props: ["contratosAll", "query"],
@@ -147,11 +148,17 @@ export default {
     beforeCreate(){
     },
     created() {
+        this.initFilters();
     },
     mounted() {
         this.contratos = this.$inertia.page.props.contratosAll;
     },
     methods: {
+        initFilters() {
+            this.filters = {
+                'global': {value: null, matchMode: FilterMatchMode.CONTAINS},
+            }
+        },
         formatCurrency(value) {
             return Number(value.data.contrato_valor).toLocaleString('pt-BR', {style: 'currency', currency: 'BRL'});
         },

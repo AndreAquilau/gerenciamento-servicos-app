@@ -5,13 +5,9 @@
                 Dashboard
             </h2>
         </template>
-        <div class="flex justify-center items-center mt-8">
-                <div class="card w-2/5 .shadow-2xl">
-                    <Chart class=".shadow-2xl" type="pie" :data="contratoData" />
-                </div>
-                <div class="card w-2/5 .shadow-2xl">
-                    <Chart type="pie" :data="acertoData" />
-                </div>
+        <div class="flex justify-center flex-wrap items-center mt-8 w-full">
+            <Chart class="w-96 mt-8" type="pie" :data="contratoData" />
+            <Chart class="w-96 mt-8" type="pie" :data="acertoData" />
         </div>
     </app-layout>
 </template>

@@ -5,7 +5,7 @@
             ref="dt" :value="acertos" v-model:selection="selectedAcertos" dataKey="id"
             :paginator="true" :rows="10" :filters="filters"
             paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown" :rowsPerPageOptions="[5,10,25]"
-            currentPageReportTemplate="Showing {first} to {last} of {totalRecords} acertos">
+            currentPageReportTemplate="Mostrando {first} para {last} de {totalRecords} Comissões">
             <Toast position="top-right" />
             <Toolbar class="p-mb-4">
                 <template #left>
@@ -17,7 +17,7 @@
                 <template #right>
                     <span class="p-input-icon-left">
                         <i class="pi pi-search" />
-                        <InputText v-model="filters['global']" placeholder="Search..." />
+                        <InputText v-model="filters['global'].value" placeholder="Pesquise..." />
                     </span>
                 </template>
             </Toolbar>
@@ -136,7 +136,6 @@
 
 <script>
 import AppLayout from '@/Layouts/AppLayout'
-import api from '../../service/api.service';
 import JetAuthenticationCard from '@/Jetstream/AuthenticationCard'
 import JetAuthenticationCardLogo from '@/Jetstream/AuthenticationCardLogo'
 import JetButton from '@/Jetstream/Button'
@@ -145,6 +144,7 @@ import JetCheckbox from "@/Jetstream/Checkbox";
 import JetLabel from '@/Jetstream/Label'
 import JetValidationErrors from '@/Jetstream/ValidationErrors'
 import { Inertia } from '@inertiajs/inertia';
+import { FilterMatchMode } from 'primevue/api';
 import moment from 'moment';
 
 const acertoValueDefault = {
@@ -277,11 +277,17 @@ export default {
         console.log("props", this.$inertia.page.props);
         this.acertos = this.$inertia.page.props.acertosAll;
         console.log(this.acertos);
+        this.initFilters();
     },
     mounted() {
         console.log(this.$inertia.page.props.user);
     },
     methods: {
+        initFilters() {
+            this.filters = {
+                'global': {value: null, matchMode: FilterMatchMode.CONTAINS},
+            }
+        },
         dataBase() {
             let data = new Date();
             let data2 = new Date(data.valueOf() - data.getTimezoneOffset() * 60000);
