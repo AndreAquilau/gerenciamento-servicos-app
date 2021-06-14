@@ -78,7 +78,6 @@
                             <div class="ml-3 relative">
                                 <jet-dropdown align="right" width="48">
                                     <template #trigger>
-                                        <div class="bg-gray-300 rounded-2xl">
                                         <button v-if="$page.props.jetstream.managesProfilePhotos" class="flex text-sm border-2 border-transparent rounded-full focus:outline-none focus:border-gray-300 transition">
                                             <img class="h-8 w-8 rounded-full object-cover" :src="$page.props.user.profile_photo_url" :alt="$page.props.user.name" />
                                            <p class="flex justify-center justify-items-center m-1.5">
@@ -95,7 +94,6 @@
                                                 </svg>
                                             </button>
                                         </span>
-                                        </div>
                                     </template>
 
                                     <template #content>
@@ -144,7 +142,108 @@
                         </div>
                     </div>
                 </div>
+
+                <!-- Responsive Navigation Menu -->
+                <div :class="{'block': showingNavigationDropdown, 'hidden': ! showingNavigationDropdown}" class="sm:hidden">
+                    <div class="pt-2 pb-3 space-y-1">
+                        <jet-responsive-nav-link
+                        as="button"
+                        @click="dashboardPage()"
+                        :active="route().current('dashboard')"
+                        >
+                            Dashboard
+                        </jet-responsive-nav-link>
+                    </div>
+                    <div class="pt-2 pb-3 space-y-1">
+                        <jet-responsive-nav-link
+                        as="button"
+                        @click="colaboradorPage()"
+                        :active="route().current('colaboradores')"
+                        >
+                            Colaboradores
+                        </jet-responsive-nav-link>
+                    </div>
+                    <div class="pt-2 pb-3 space-y-1">
+                        <jet-responsive-nav-link
+                        as="button"
+                        @click="correntistaPage()"
+                        :active="route().current('correntistas')"
+                        >
+                            Clientes/Empresa
+                        </jet-responsive-nav-link>
+                    </div>
+                    <div class="pt-2 pb-3 space-y-1">
+                        <jet-responsive-nav-link
+                        as="button"
+                        @click="contratoPage()"
+                        :active="route().current('contratos')"
+                        >
+                            Serviços
+                        </jet-responsive-nav-link>
+                    </div>
+                    <div class="pt-2 pb-3 space-y-1">
+                        <jet-responsive-nav-link
+                        :active="route().current('comissoes')"
+                        as="button"
+                        @click="comissaoPage()"
+                        >
+                            Comissões
+                        </jet-responsive-nav-link>
+                    </div>
+
+                    <!-- Responsive Settings Options -->
+                    <div class="pt-4 pb-1 border-t border-gray-200">
+                        <div class="flex items-center px-4">
+                            <div v-if="$page.props.jetstream.managesProfilePhotos" class="flex-shrink-0 mr-3" >
+                                <img class="h-10 w-10 rounded-full object-cover" :src="$page.props.user.profile_photo_url" :alt="$page.props.user.name" />
+                            </div>
+
+                            <div>
+                                <div class="font-medium text-base text-gray-800">{{ $page.props.user.name }}</div>
+                                <div class="font-medium text-sm text-gray-500">{{ $page.props.user.email }}</div>
+                            </div>
+                        </div>
+
+                        <div class="mt-3 space-y-1">
+                            <div class="block px-4 py-2 text-xs text-gray-400">
+                                Gerenciar Conta
+                            </div>
+
+                            <jet-responsive-nav-link
+                            :href="route('profile.show')"
+                            >
+                                Perfil
+                            </jet-responsive-nav-link>
+
+                            <jet-responsive-nav-link
+                            @click="empresaPage()"
+                            >
+                                Parâmetro/Empresa
+                            </jet-responsive-nav-link>
+
+                            <div class="block px-4 py-2 text-xs text-gray-400">
+                                Gerenciamento De Usuários
+                            </div>
+
+                            <jet-responsive-nav-link
+                            @click="usuarioPage()"
+                            >
+                                Usuários Do Sistema
+                            </jet-responsive-nav-link>
+
+
+                            <!-- Authentication -->
+                            <form method="POST" @submit.prevent="logout">
+                                <jet-responsive-nav-link as="button">
+                                    Sair
+                                </jet-responsive-nav-link>
+                            </form>
+
+                        </div>
+                    </div>
+                </div>
             </nav>
+
 
             <!-- Page Heading -->
             <header class="bg-white shadow" v-if="$slots.header">

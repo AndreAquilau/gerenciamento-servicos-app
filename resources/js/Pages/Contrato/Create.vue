@@ -174,17 +174,14 @@
                         <div class="ml-2"  @click="() => gerarComissaoDialog = true" v-show="contrato.id && !contrato.status">
                             <Button icon="pi pi-check" label="Aprovar" class="p-button-success" />
                         </div>
-                        <div class="ml-2"  @click="cancelar()" v-show="contrato.id && contrato.status">
-                            <Button icon="pi pi-check" label="Cancelar" class="p-button-danger" />
-                        </div>
                     </div>
                 </template>
             </Card>
         </div>
         <Dialog v-model:visible="gerarComissaoDialog" :style="{width: '450px'}" header="Confirme" :modal="true">
             <div class="confirmation-content">
-                <i class="pi pi-exclamation-triangle p-mr-3" style="font-size: 2rem" />
-                <span >Tem certeza de que deseja gerar a comissão do contrato?</span>
+                <i class="pi pi-exclamation-triangle p-mr-3" style="font-size: 2rem" /><br>
+                <span >Deseja gerar a comissão do contrato?</span>
             </div>
             <template #footer>
                 <Button label="Não" icon="pi pi-times" class="p-button-text" @click="hideGerarComissaoDialog()"/>
