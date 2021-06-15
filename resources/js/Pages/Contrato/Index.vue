@@ -21,7 +21,11 @@
                     </div>
                 </template>
             </Toolbar>
-            <Column class="text-center" field="contrato_id" header="Código" sortable></Column>
+            <Column class="text-center" field="contrato_id" header="Contrato" sortable>
+                <template #body="slotProps">
+                    {{`${("00000000" + slotProps.data.contrato_id).slice(-8)}`}}
+                </template>
+            </Column>
             <Column class="text-center" field="correntista_nome" header="Correntista" sortable></Column>
             <Column class="text-center" field="colaborador_nome_completo" header="Colaborador" sortable></Column>
             <Column class="text-center" field="contrato_data_de_emissao" header="Emissao" sortable>

@@ -61,11 +61,12 @@ class AcertoController extends Controller
         $body = json_decode(file_get_contents('php://input'), true);
 
         $acertos = DB::table('users')
-        ->join('contratos', 'users.id', '=', 'contratos.user_id')
         ->join('empresas', 'users.empresa_id', '=', 'empresas.id')
+        ->join('contratos', 'users.id', '=', 'contratos.user_id')
         ->join('correntistas', 'contratos.correntista_id', '=', 'correntistas.id')
         ->join('colaboradors', 'contratos.colaborador_id', '=', 'colaboradors.id')
-        ->join('acertos', 'contratos.id', '=', 'acertos.contrato_id')
+        ->join('recebes', 'contratos.id', '=', 'recebes.contrato_id')
+        ->join('acertos', 'recebes.id', '=', 'acertos.recebe_id')
         ->select(
             'contratos.id AS contrato_id',
             'contratos.data_de_fechamento AS contrato_data_de_fechamento',
@@ -127,11 +128,30 @@ class AcertoController extends Controller
             'acertos.updated_at AS acerto_updated_at',
             'acertos.user_id AS acerto_user_id',
             'acertos.recebe_id AS acerto_recebe_id',
-            'acertos.contrato_id AS acerto_contrato_id'
+            'acertos.contrato_id AS acerto_contrato_id',
+            'recebes.id AS recebe_id' ,
+            'recebes.documento AS recebe_documento' ,
+            'recebes.ordem_documento AS recebe_ordem_documento',
+            'recebes.ordem_documento_final AS recebe_ordem_documento_final',
+            'recebes.desconto AS recebe_desconto',
+            'recebes.acrescimo AS recebe_acrescimo',
+            'recebes.pago AS recebe_pago',
+            'recebes.restante AS recebe_restante',
+            'recebes.total AS recebe_total',
+            'recebes.status AS recebe_status',
+            'recebes.data_de_emissao AS recebe_data_de_emissao',
+            'recebes.data_de_vencimento AS recebe_data_de_vencimento',
+            'recebes.data_de_pagamento AS recebe_data_de_pagamento',
+            'recebes.created_at AS recebe_created_at',
+            'recebes.updated_at AS recebe_updated_at',
+            'recebes.user_id AS recebe_user_id' ,
+            'recebes.acerto_id AS recebe_acerto_id',
+            'recebes.contrato_id AS recebe_contrato_id',
         )
         ->where([
             ['empresas.id', '=', $query['empresa_id']],
         ])
+        ->orderBy('acertos.created_at', 'desc')
         ->get();
 
         return $acertos;
@@ -212,8 +232,10 @@ class AcertoController extends Controller
                     "user_id" => $query["user_id"],
                     "contrato_id" => $acerto["acerto_contrato_id"],
                     "data_de_pagamento" => null,
+                    "data_de_emissao" => $acerto["acerto_data_de_pagamento"],
                     "created_at" => $acerto["acerto_data_de_pagamento"],
                     "updated_at" => $acerto["acerto_data_de_pagamento"],
+                    "recebe_id" => $acerto["acerto_recebe_id"],
                 ]);
 
             }

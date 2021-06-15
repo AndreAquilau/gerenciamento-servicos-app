@@ -279,7 +279,7 @@ export default {
                 'recebe_ordem_documento_final': null,
                 'recebe_desconto': null,
                 'recebe_acrescimo': null,
-                'recebe_pago ': null,
+                'recebe_pago': null,
                 'recebe_restante': null,
                 'recebe_total': null,
                 'recebe_status': null,
@@ -400,10 +400,10 @@ export default {
             recebimento.recebe_status = true;
 
             // pre-dados acerto
-            acerto.valor_colaborador = Number(recebimento.recebe_total) * (recebimento.contrato_percentual_comissao_colaborador/100);
-            acerto.valor_empresa = (recebimento.recebe_total * ((100.00 - recebimento.contrato_percentual_comissao_colaborador)/100));
+            acerto.valor_colaborador = Number(recebimento.recebe_pago) * (recebimento.contrato_percentual_comissao_colaborador/100);
+            acerto.valor_empresa = (recebimento.recebe_pago * ((100.00 - recebimento.contrato_percentual_comissao_colaborador)/100));
             acerto.restante = acerto.valor_colaborador
-            acerto.total = recebimento.recebe_total;
+            acerto.total = recebimento.recebe_pago;
             acerto.data_de_emissao = this.dataBase();
             acerto.created_at = this.dataBase();
             acerto.updated_at = this.dataBase();

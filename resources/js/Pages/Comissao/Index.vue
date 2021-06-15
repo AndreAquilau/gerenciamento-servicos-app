@@ -21,7 +21,11 @@
                     </span>
                 </template>
             </Toolbar>
-            <Column class="text-center" field="acerto_contrato_id" header="Contrato" sortable></Column>
+            <Column class="text-center" field="acerto_contrato_id" header="Documento" sortable>
+                <template #body="slotProps">
+                    {{`${("00000000" + slotProps.data.contrato_id).slice(-8)} - ${slotProps.data.recebe_ordem_documento}/${slotProps.data.recebe_ordem_documento_final}`}}
+                </template>
+            </Column>
             <Column class="text-center" field="colaborador_nome_completo" header="Colaborador" sortable></Column>
             <Column class="text-center" field="acerto_created_at" header="Emissao" sortable>
                 <template #body="slotProps">
@@ -66,7 +70,7 @@
 
         <Dialog
         v-model:visible="acertoDialog"
-        :style="{width: '75%'}"
+        :style="{width: '85%'}"
         header="Pagamento De Comissão"
         :hide="resetAcerto()"
         :modal="true" class="p-fluid">
@@ -88,9 +92,18 @@
             </div>
             <div class="card">
                 <DataTable :value="[acerto]" editMode="cell" class="editable-cells-table" responsiveLayout="scroll">
-                    <Column field="acerto_contrato_id" header="Contrato" style="width:15%"></Column>
+                    <Column field="acerto_contrato_id" header="Contrato" style="width:15%">
+                        <template #body="slotProps">
+                            {{`${("00000000" + slotProps.data.contrato_id).slice(-8)}`}}
+                        </template>
+                    </Column>
+                    <Column field="recebe_ordem_documento" header="Documento" style="width:15%">
+                        <template #body="slotProps">
+                            {{`${("00000000" + slotProps.data.contrato_id).slice(-8)} - ${slotProps.data.recebe_ordem_documento}/${slotProps.data.recebe_ordem_documento_final}`}}
+                        </template>
+                    </Column>
                     <Column field="colaborador_nome_completo" header="Colaborador" style="width:20%"></Column>
-                    <Column field="acerto_total" header="Total" style="width:15%">
+                    <Column field="acerto_total" header="Valor Recebido" style="width:15%">
                          <InputNumber v-model="slotProps.data[slotProps.column.props.field]" prefix="R$ "  mode="decimal" :minFractionDigits="2" :maxFractionDigits="2"/>
                     </Column>
                     <Column field="acerto_valor_empresa" header="Comissão Empresa" style="width:25%">
@@ -206,10 +219,10 @@ const acertoValueDefault = {
     'recebe_id': null ,
     'recebe_documento': null ,
     'recebe_ordem_documento': null,
-    'recebes_ordem_documento_final': null,
+    'recebe_ordem_documento_final': null,
     'recebe_desconto': null,
     'recebe_acrescimo': null,
-    'recebes_pago ': null,
+    'recebe_pago': null,
     'recebe_restante': null,
     'recebe_total': null,
     'recebe_status': null,
@@ -221,7 +234,6 @@ const acertoValueDefault = {
     'recebe_user_id': null,
     'recebe.acerto_id': null,
     'recebe.contrato_id': null
-
 };
 
 export default {
@@ -302,7 +314,7 @@ export default {
                 'recebe_ordem_documento_final': null,
                 'recebe_desconto': null,
                 'recebe_acrescimo': null,
-                'recebe_pago ': null,
+                'recebe_pago': null,
                 'recebe_restante': null,
                 'recebe_total': null,
                 'recebe_status': null,
@@ -312,8 +324,8 @@ export default {
                 'recebe_created_at': null,
                 'recebe_updated_at': null,
                 'recebe_user_id': null,
-                'recebe_acerto_id': null,
-                'recebe_contrato_id': null
+                'recebe.acerto_id': null,
+                'recebe.contrato_id': null
             },
             selectedAcertos: null,
             filters: {},
@@ -356,6 +368,7 @@ export default {
             }
         },
         openEdit(acerto) {
+            console.log(acerto);
             this.submitted = false;
             this.acertoDialog = true;
             this.acerto = {...acerto};
@@ -392,7 +405,7 @@ export default {
         resetAcerto()
         {
             console.log('Reset Values')
-            this.acerto = {...acertoValueDefault};
+            //this.acerto = {...acertoValueDefault};
         },
         exportCSV() {
             this.$refs.dt.exportCSV();
