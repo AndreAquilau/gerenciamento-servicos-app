@@ -10,16 +10,20 @@ class Acerto extends Model
     use HasFactory;
 
     protected $fillable = [
-        'data_de_pagamento',
         'valor_colaborador',
         'valor_empresa',
         'pago',
         'restante',
-        'status',
         'total',
-        'contrato_id',
-        'user_id',
+        'acrescimo',
+        'desconto',
+        'status',
+        'data_de_emissao',
+        'data_de_pagamento',
         'created_at',
-        'updated_at'
+        'updated_at',
+        'user_id',
+        'recebe_id',
+        'contrato_id',
     ];
 }

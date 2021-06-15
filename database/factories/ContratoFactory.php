@@ -28,17 +28,21 @@ class ContratoFactory extends Factory
         return [
             'data_de_fechamento' => $this->faker->dataDeFechamento,
             'data_de_emissao' => $this->faker->dataDeEmissao,
+            'data_de_vencimento' => $this->faker->dataDeVencimento,
             'status' => $this->faker->status,
             'descricao_do_servico' => $this->faker->descricaoDoServico,
             'valor' => $this->faker->valor,
-            'acerto_pago' => $this->faker->acertoPago,
+            'valor_avista' => $this->faker->valor_avista,
+            'valor_parcelado' => $this->faker->valor_parcelado,
+            'quantidade_parcela' => $this->faker->quantidadeParcela,
+            'desconto' => $this->faker->desconto,
+            'acrescimo' => $this->faker->acrescimo,
             'percentual_comissao_colaborador' => $this->faker->percentualComissaoColaborador,
             'created_at' => $this->faker->createAt,
             'updated_at' => $this->faker->updatedAt,
             'user_id' => User::factory(),
             'colaborador_id' => Correntista::factory(),
             'correntista_id' => Colaborador::factory(),
-            'acerto_id' => Acerto::factory(),
         ];
     }
 }

@@ -136,9 +136,6 @@
                     </div>
                     <hr class="border-2">
                     <div class="mt-2">
-                        <div>
-                            <h1 class="font-medium">Fatura Do Serviço</h1>
-                        </div>
                         <div class="m-6 mt-10">
                             <div class="p-field p-col-12 p-md-4">
                                 <span class="p-float-label">
@@ -220,9 +217,28 @@ export default {
             filteredColaboradores: null,
             gerarComissaoDialog: false,
             cancelarComissaoDialog: false,
-            contrato: null,
+            contrato: {
+                id: null,
+                data_de_fechamento: null,
+                data_de_emissao: null,
+                data_de_vencimento: null,
+                status: null,
+                descricao_do_servico: null,
+                valor: 0.00,
+                valor_avista: 0.00,
+                valor_parcelado: 0.00,
+                quantidade_parcela: 0,
+                desconto: 0.00,
+                acrescimo: 0.00,
+                percentual_comissao_colaborador: 0.00,
+                created_at: null,
+                updated_at: null,
+                user_id: null,
+                colaborador_id: null,
+                correntista_id: null,
+            },
             empresa: {
-                "id": 0,
+                "id": null,
                 "fantasia": "",
                 "razao_social": "",
                 "inscricao_estadual": "",
@@ -240,9 +256,80 @@ export default {
                 "created_at": null,
                 "updated_at": null
             },
-            correntista: null,
+            correntista: {
+                "id": null,
+                "nome": null,
+                "cpf": null,
+                "cnpj": null,
+                "rua": null,
+                "telefone": null,
+                "bairro": null,
+                "cidade": null,
+                "numero": null,
+                "estado": null,
+                "user_id": null,
+                "inativo": null,
+                "updated_at": null,
+                "created_at": null,
+
+            },
             correntistas: null,
-            colaborador: null,
+            colaborador: {
+                "id": null,
+                "nome_completo": "",
+                "cpf_cnpj": "",
+                "rg": "",
+                "registro": "",
+                "rua": "",
+                "comissao": 0.00,
+                "telefone": "",
+                "bairro": "",
+                "cidade": "",
+                "numero": "",
+                "estado": "",
+                "experiencia": "",
+                "user_id": 0,
+                "inativo": false,
+                "updated_at": null,
+                "created_at": null,
+
+            },
+            acerto: {
+                valor_colaborador: 0.00,
+                valor_empresa: 0.00,
+                pago: 0.00,
+                restante: 0.00,
+                total: 0.00,
+                desconto: 0.00,
+                acrescimo: 0.00,
+                status: false,
+                data_de_emissao: null,
+                data_de_pagamento: null,
+                updated_at: null,
+                created_at: null,
+                contrato_id: null,
+                recebe_id: null,
+                user_id: null,
+            },
+            receber:{
+                documento: 1,
+                ordem_documento: 1,
+                ordem_documento_final: 1,
+                desconto: 0.00,
+                acrescimo: 0.00,
+                pago: 0.00,
+                restante: 0.00,
+                total: 0.00,
+                status: false,
+                data_de_vencimento: null,
+                data_de_pagamento: null,
+                data_de_emissao: null,
+                updated_at: null,
+                created_at: null,
+                user_id: null,
+                contrato_id: null,
+                acerto_id: null,
+            },
             colaboradores: null,
         }
     },
@@ -251,6 +338,7 @@ export default {
         this.contrato = this.$inertia.page.props.contratoEdit;
         this.contrato.data_de_emissao = moment(this.$inertia.page.props.contratoEdit.data_de_emissao).format('DD/MM/YYYY h:mm:ss');
         this.contrato.data_de_fechamento = this.$inertia.page.props.contratoEdit.data_de_fechamento && moment(this.$inertia.page.props.contratoEdit.data_de_fechamento).format('DD/MM/YYYY h:mm:ss');
+        this.contrato.data_de_vencimento = moment(this.dataBase()).format("DD/MM/YYYY");
         this.correntista = this.$inertia.page.props.correntistaEdit;
         this.colaborador =this.$inertia.page.props.colaboradorEdit;
         this.correntistas = this.$inertia.page.props.correntistasAll;
@@ -326,11 +414,42 @@ export default {
                 user_id: this.$inertia.page.props.user.id,
             });
         },
+        updateValorAVista(){
+            console.log("update valores")
+            this.faturamentoShow = true;
+            this.contrato.valor_avista = this.contrato.valor_avista - this.contrato.desconto;
+            this.contrato.valor_parcelado = this.contrato.valor - this.contrato.valor_avista
+            this.contrato.quantidade_parcela = 1;
+        },
+        preseveDadosContratoUpdate(){
+            this.contrato.status = null;
+            this.contrato.data_de_emissao = moment(this.dataBase()).format("DD/MM/YYYY h:mm:ss");
+            this.contrato.data_de_vencimento = moment(this.dataBase()).format("DD/MM/YYYY");
+        },
         salvar() {
             validateUserAuth(this.$inertia, this.$props.query,
             async () => {
                 if(this.contrato.id) {
                     console.log('Update Contrato',this.$props);
+
+                    if(!this.contrato.colaborador_id){
+                        this.preseveDadosContratoUpdate();
+                        this.showMessage('Alerta', 'Informe o colaborador!', false);
+                        return;
+                    }
+
+                    if(!this.contrato.correntista_id){
+                        this.preseveDadosContratoUpdate()
+                        this.showMessage('Alerta', 'Informe o correntista!', false);
+                        return;
+                    }
+
+                    //config data
+                    if(this.contrato.data_de_vencimento) {
+                        const dataDeVencimento  = this.contrato.data_de_vencimento.split('/');
+                        this.contrato.data_de_vencimento = `${dataDeVencimento[2]}${dataDeVencimento[1]}${dataDeVencimento[0]}`;
+                    }
+
                     this.contrato.updated_at = this.dataBase();
                     this.contrato.data_de_emissao = this.$props.contratoEdit.data_de_emissao;
 
@@ -339,8 +458,6 @@ export default {
                         user_id: this.contrato.user_id,
                         contrato_id: this.contrato.id,
                     };
-
-                    console.log(this.$data.contrato);
 
                     await Inertia.put(this.route('contrato.update', query),
                     {
@@ -353,6 +470,7 @@ export default {
                             this.contrato = page.props.contratoEdit;
                             this.contrato.data_de_emissao =  moment(page.props.contratoEdit.data_de_emissao).format('DD/MM/YYYY h:mm:ss');
                             this.contrato.data_de_fechamento = page.props.contratoEdit.data_de_fechamento && moment(page.props.contratoEdit.data_de_fechamento).format('DD/MM/YYYY h:mm:ss');
+                            this.contrato.data_de_vencimento =  moment(page.props.contratoEdit.data_de_vencimento).format('DD/MM/YYYY');
                             this.correntista =  page.props.correntistaEdit;
                             this.colaborador = page.props.colaboradorEdit;
                             this.colaboradores = page.props.colaboradoresAll;
@@ -378,10 +496,39 @@ export default {
             validateUserAuth(this.$inertia, this.$props.query,
             async () => {
                 if(this.contrato.id) {
-                    console.log('Update Contrato',this.$props);
+                     //config data
+                    if(this.contrato.data_de_vencimento) {
+                        const dataDeVencimento  = this.contrato.data_de_vencimento.split('/');
+                        this.contrato.data_de_vencimento = `${dataDeVencimento[2]}${dataDeVencimento[1]}${dataDeVencimento[0]}`;
+                    }
+
+                    // pre-dados contrato
                     this.contrato.updated_at = this.dataBase();
                     this.contrato.data_de_emissao = this.$props.contratoEdit.data_de_emissao;
+                    this.contrato.created_at = this.$inertia.page.props.contratoEdit.created_at.split('.')[0];
                     this.contrato.status = true;
+                    this.contrato.data_de_fechamento = this.dataBase();
+
+                    // pre-dados acerto
+                    this.acerto.valor_empresa = (this.contrato.valor * ((100.00 - this.contrato.percentual_comissao_colaborador)/100));
+                    this.acerto.valor_colaborador = this.contrato.valor * (this.contrato.percentual_comissao_colaborador/100);
+                    this.acerto.restante = this.acerto.valor_colaborador;
+                    this.acerto.total = this.contrato.valor;
+                    this.acerto.data_de_emissao = this.dataBase();
+                    this.acerto.created_at = this.dataBase();
+                    this.acerto.updated_at = this.dataBase();
+                    this.acerto.contrato_id = this.contrato.id;
+                    this.acerto.user_id = this.contrato.user_id;
+
+                    //pre-datos recebimento
+                    this.receber.restante = this.contrato.valor;
+                    this.receber.total = this.contrato.valor;
+                    this.receber.data_de_vencimento = this.contrato.data_de_vencimento;
+                    this.receber.data_de_emissao = this.dataBase();
+                    this.receber.created_at = this.dataBase();
+                    this.receber.updated_at = this.dataBase();
+                    this.receber.contrato_id = this.contrato.id;
+                    this.receber.user_id = this.contrato.user_id;
 
                     const query = {
                         empresa_id: this.$props.query.empresa_id,
@@ -395,10 +542,9 @@ export default {
                     {
                         query,
                         contrato: this.contrato,
-                        acerto: {
-                            created_at: this.dataBase(),
-                            updated_at: this.dataBase()
-                        }
+                        acerto: this.acerto,
+                        receber: this.receber,
+
                     },
                     {
                         onFinish: () => {
@@ -412,14 +558,18 @@ export default {
             });
         },
         cancelar() {
+
             console.log('Update Contrato',this.$props);
-            this.contrato.updated_at = this.dataBase();
-            this.contrato.data_de_fechamento = this.dataBase();
-            this.contrato.data_de_emissao = this.$props.contratoEdit.data_de_emissao;
+            const contrato = {...this.$props.contratoEdit};
+
+            contrato.updated_at = this.dataBase();
+            contrato.data_de_fechamento = null;
+            contrato.status = false;
+
             const query = {
                 empresa_id: this.$props.query.empresa_id,
                 user_id: this.contrato.user_id,
-                contrato_id: this.contrato.id,
+                contrato_id: contrato.id,
             };
 
             console.log(this.$data.contrato);
@@ -427,7 +577,7 @@ export default {
             Inertia.put(this.route('contrato.cancelarEdit', query),
             {
                 query,
-                contrato: this.contrato
+                contrato: contrato
             },
             {
                 onFinish: () => {

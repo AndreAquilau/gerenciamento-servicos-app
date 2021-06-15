@@ -8,6 +8,7 @@ use App\Http\Controllers\ComissaoController;
 use App\Http\Controllers\AcertoController;
 use App\Http\Controllers\ContratoController;
 use App\Http\Controllers\DashBoardController;
+use App\Http\Controllers\RecebeController;
 use Illuminate\Http\Request;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
@@ -99,5 +100,6 @@ Route::middleware(['auth:sanctum', 'verified'])->put('/usuarios', [UserControlle
 
 Route::middleware(['auth:sanctum', 'verified'])->post('/usuarios', [UserController::class, 'create'] )->name('usuario.create');
 
-
-
+//RECEBIMENTOS
+Route::middleware(['auth:sanctum', 'verified'])->get('/recebimentos', [RecebeController::class, 'renderPage'] )->name('recebimentos');
+Route::middleware(['auth:sanctum', 'verified'])->put('/recebimentos', [RecebeController::class, 'update'] )->name('recebimento.update');

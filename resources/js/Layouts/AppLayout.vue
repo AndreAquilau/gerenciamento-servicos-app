@@ -58,6 +58,16 @@
 
                             <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
                                 <jet-nav-link
+                                as="button"
+                                @click="recebimentoPage()"
+                                :active="route().current('recebimentos')"
+                                >
+                                    Recebimentos
+                                </jet-nav-link>
+                            </div>
+
+                            <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
+                                <jet-nav-link
                                 :active="route().current('comissoes')"
                                 as="button"
                                 @click="comissaoPage()"
@@ -179,6 +189,15 @@
                         :active="route().current('contratos')"
                         >
                             Serviços
+                        </jet-responsive-nav-link>
+                    </div>
+                    <div class="pt-2 pb-3 space-y-1">
+                        <jet-responsive-nav-link
+                        as="button"
+                        @click="recebimentoPage()"
+                        :active="route().current('recebimentos')"
+                        >
+                            Recebimentos
                         </jet-responsive-nav-link>
                     </div>
                     <div class="pt-2 pb-3 space-y-1">
@@ -357,6 +376,13 @@ import { Inertia } from '@inertiajs/inertia'
             },
             comissaoPage() {
                 Inertia.get(this.route('comissoes'), {
+                    empresa_id: this.$inertia.page.props.user.empresa_id,
+                    user_id: this.$inertia.page.props.user.id,
+                }
+                );
+            },
+            recebimentoPage() {
+                Inertia.get(this.route('recebimentos'), {
                     empresa_id: this.$inertia.page.props.user.empresa_id,
                     user_id: this.$inertia.page.props.user.id,
                 }

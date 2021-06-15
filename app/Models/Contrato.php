@@ -10,18 +10,22 @@ class Contrato extends Model
     use HasFactory;
 
     protected $fillable = [
-        'data_de_emissao',
         'data_de_fechamento',
+        'data_de_emissao',
+        'data_de_vencimento',
         'status',
-        'descricao_do_servico',
         'valor',
-        'comissao',
-        'acerto_pago',
+        'valor_avista',
+        'valor_parcelado',
+        'descricao_do_servico',
+        'quantidade_parcela',
+        'desconto',
+        'acrescimo',
         'percentual_comissao_colaborador',
-        'created_at',
+        'created_at' ,
         'updated_at',
         'user_id',
-        'colaborador_id' ,
+        'colaborador_id',
         'correntista_id',
     ];
 }

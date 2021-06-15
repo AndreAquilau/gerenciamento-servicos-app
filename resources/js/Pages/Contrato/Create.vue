@@ -147,15 +147,22 @@
                     </div>
                     <hr class="border-2">
                     <div class="mt-2">
-                        <div>
-                            <h1 class="font-medium">Fatura Do Serviço</h1>
-                        </div>
-                        <div class="m-6 mt-10">
-                            <div class="p-field p-col-12 p-md-4">
-                                <span class="p-float-label">
-                                    <InputNumber id="valor" v-model="contrato.valor" :disabled="contrato.id" prefix="R$ "  mode="decimal" :minFractionDigits="2" :maxFractionDigits="2"/>
-                                    <label for="valor">Valor</label>
-                                </span>
+                        <div class="flex">
+                            <div class="m-6 mt-10">
+                                <div class="p-field p-col-12 p-md-4">
+                                    <span class="p-float-label">
+                                        <InputNumber
+                                        id="total"
+                                        v-model="contrato.valor"
+                                        :disabled="contrato.id"
+                                        prefix="R$ "
+                                        mode="decimal"
+                                        :minFractionDigits="2"
+                                        :maxFractionDigits="2"
+                                        />
+                                        <label for="valor">Total</label>
+                                    </span>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -203,7 +210,6 @@ import JetResponsiveNavLink from '@/Jetstream/ResponsiveNavLink';
 import moment from 'moment';
 import { Inertia } from '@inertiajs/inertia';
 import { validateUserAuth } from '../Auth';
-import axios from 'axios';
 
 export default {
     props: ['colaboradorEdit', 'correntistaEdit', 'contratoEdit', 'colaboradoresAll', 'correntistasAll', 'query', "contratoCreated"],
@@ -220,20 +226,26 @@ export default {
         return {
             filteredCorrentistas: null,
             filteredColaboradores: null,
+            columns: [],
+            faturamentoShow: false,
             gerarComissaoDialog: false,
             contrato: {
                 id: null,
                 data_de_fechamento: null,
                 data_de_emissao: null,
+                data_de_vencimento: null,
                 status: null,
                 descricao_do_servico: null,
-                valor: null,
-                acerto_pago: null,
-                percentual_comissao_colaborador: null,
+                valor: 0.00,
+                valor_avista: 0.00,
+                valor_parcelado: 0.00,
+                quantidade_parcela: 0,
+                desconto: 0.00,
+                acrescimo: 0.00,
+                percentual_comissao_colaborador: 0.00,
                 created_at: null,
                 updated_at: null,
                 user_id: null,
-                acerto_id: null,
                 colaborador_id: null,
                 correntista_id: null,
             },
@@ -294,6 +306,42 @@ export default {
                 "created_at": null,
 
             },
+            acerto: {
+                valor_colaborador: 0.00,
+                valor_empresa: 0.00,
+                pago: 0.00,
+                restante: 0.00,
+                total: 0.00,
+                desconto: 0.00,
+                acrescimo: 0.00,
+                status: false,
+                data_de_emissao: null,
+                data_de_pagamento: null,
+                updated_at: null,
+                created_at: null,
+                contrato_id: null,
+                recebe_id: null,
+                user_id: null,
+            },
+            receber:{
+                documento: 1,
+                ordem_documento: 1,
+                ordem_documento_final: 1,
+                desconto: 0.00,
+                acrescimo: 0.00,
+                pago: 0.00,
+                restante: 0.00,
+                total: 0.00,
+                status: false,
+                data_de_vencimento: null,
+                data_de_pagamento: null,
+                data_de_emissao: null,
+                updated_at: null,
+                created_at: null,
+                user_id: null,
+                contrato_id: null,
+                acerto_id: null,
+            },
             colaboradores: null,
         }
     },
@@ -304,6 +352,7 @@ export default {
     created() {
         this.contrato.user_id = this.$inertia.page.props.user;
         this.contrato.data_de_emissao = moment(this.dataBase()).format("DD/MM/YYYY h:mm:ss");
+        this.contrato.data_de_vencimento = moment(this.dataBase()).format("DD/MM/YYYY");
         console.log(this.$inertia);
     },
     mounted() {
@@ -372,21 +421,98 @@ export default {
                 user_id: this.$inertia.page.props.user.id,
             });
         },
+        formatCurrency(value) {
+            return Number(value).toLocaleString('pt-BR', {style: 'currency', currency: 'BRL'});
+        },
+        updateValorAVista(){
+            console.log("update valores")
+            this.faturamentoShow = true;
+            this.contrato.valor_avista = this.contrato.valor_avista - this.contrato.desconto;
+            this.contrato.valor_parcelado = this.contrato.valor - this.contrato.valor_avista
+            this.contrato.quantidade_parcela = 1;
+        },
+        preseveDadosContratoCriar(){
+            this.contrato.status = null;
+            this.contrato.data_de_emissao = moment(this.dataBase()).format("DD/MM/YYYY h:mm:ss");
+            this.contrato.data_de_vencimento = moment(this.dataBase()).format("DD/MM/YYYY");
+        },
         salvar() {
             validateUserAuth(this.$inertia, this.$props.query,
             async () => {
                 if(!this.contrato.id) {
                     console.log('create',this.contrato);
+
+
+                    //config data
+                    if(this.contrato.data_de_vencimento) {
+                        const dataDeVencimento  = this.contrato.data_de_vencimento.split('/');
+                        this.contrato.data_de_vencimento = `${dataDeVencimento[2]}${dataDeVencimento[1]}${dataDeVencimento[0]}`;
+                    }
+
+                    //pre-dados do contrato
+
                     this.contrato.status = false;
+
                     this.contrato.data_de_fechamento = null;
+
                     this.contrato.data_de_emissao = this.dataBase();
+
+                    this.contrato.data_de_vencimento = this.contrato.data_de_vencimento ? this.contrato.data_de_vencimento : this.dataBase();
+
+                    this.contrato.created_at = this.dataBase();
+
+                    this.contrato. updated_at = this.dataBase();
+
+                    this.contrato.valor = this.contrato.valor > 0.00 ? this.contrato.valor : 0.00;
+
+                    this.contrato.valor_avista = !this.contrato.valor_avista && this.contrato.valor;
+
+                    this.contrato.valor_parcelado = this.contrato.valor_parcelado > 0.00 ? this.contrato.valor_parcelado : 0.00;
+
+                    this.contrato.quantidade_parcela = this.contrato.valor_parcelado > 0 ? this.contrato.quantidade_parcela : 0;
+
+                    this.contrato.desconto = this.contrato.desconto > 0.00 ? this.contrato.desconto : 0.00;
+
+                    this.contrato.descricao_do_servico = this.contrato.descricao_do_servico ? this.contrato.descricao_do_servico : "<p>Serviço Não Informado!<p/>";
+
+                    this.contrato.acrescimo = this.contrato.acrescimo > 0.00 ? this.contrato.acrescimo : 0.00;
+
+                    this.contrato.percentual_comissao_colaborador = this.contrato.percentual_comissao_colaborador > 0.00 ? this.contrato.percentual_comissao_colaborador : 0.00;
+
+                    this.contrato.user_id = this.$inertia.page.props.user.id;
+
+                    this.contrato.colaborador_id = this.colaborador.id;
+
+                    this.contrato.correntista_id = this.correntista.id;
+
+                    if(!this.contrato.colaborador_id){
+                        this.preseveDadosContratoCriar();
+                        this.showMessage('Alerta', 'Informe o colaborador!', false);
+                        return;
+                    }
+                    if(!this.contrato.correntista_id){
+                        this.preseveDadosContratoCriar()
+                        this.showMessage('Alerta', 'Informe o correntista!', false);
+                        return;
+                    }
+
+                    //desconto no total
+                    this.contrato.valor = (this.contrato.valor + this.contrato.acrescimo) - this.contrato.desconto;
+
+                    //update dados
+                    this.contrato.valor = this.contrato.valor > 0.00 ? this.contrato.valor : 0.00;
+
+                    this.contrato.valor_avista = !this.contrato.valor_avista && this.contrato.valor;
+
+                    this.contrato.quantidade_parcela = this.contrato.valor_parcelado > 0 ? this.contrato.quantidade_parcela : 0;
+
+                    this.contrato.valor_parcelado = this.contrato.valor_parcelado > 0.00 ? this.contrato.valor_parcelado : 0.00;
 
                     const query = {
                         empresa_id: this.$props.query.empresa_id,
                         user_id: this.$props.query.user_id,
                     };
 
-                    console.log(this.$data.contrato);
 
                     await Inertia.post(this.route('contrato.create', query),
                     {
@@ -399,7 +525,9 @@ export default {
                             console.log('Create Contrato Salvo', page);
                             this.contrato = page.props.contratoCreated;
                             this.contrato.data_de_emissao =  moment(page.props.contratoCreated.data_de_emissao).format('DD/MM/YYYY h:mm:ss');
+                            this.contrato.data_de_vencimento =  moment(page.props.contratoCreated.data_de_vencimento).format('DD/MM/YYYY');
                             this.contrato.data_de_fechamento = this.contrato.data_de_fechamento && moment(page.props.contratoCreated.data_de_fechamento).format('DD/MM/YYYY h:mm:ss');
+
                             console.log('Update Date Contrato', page.props);
                             this.showMessage('Sucesso', 'Contrato Salvo');
                         },
@@ -424,11 +552,39 @@ export default {
             });
         },
         aprovar() {
+                    //config data
+                    if(this.contrato.data_de_vencimento) {
+                        const dataDeVencimento  = this.contrato.data_de_vencimento.split('/');
+                        this.contrato.data_de_vencimento = `${dataDeVencimento[2]}${dataDeVencimento[1]}${dataDeVencimento[0]}`;
+                    }
+
+                    // pre-dados contrato
                     this.contrato.updated_at = this.dataBase();
                     this.contrato.data_de_emissao = this.$props.contratoCreated.data_de_emissao;
                     this.contrato.created_at = this.$inertia.page.props.contratoCreated.created_at.split('.')[0];
                     this.contrato.status = true;
                     this.contrato.data_de_fechamento = this.dataBase();
+
+                    // pre-dados acerto
+                    this.acerto.valor_empresa = (this.contrato.valor * ((100.00 - this.contrato.percentual_comissao_colaborador)/100));
+                    this.acerto.valor_colaborador = this.contrato.valor * (this.contrato.percentual_comissao_colaborador/100);
+                    this.acerto.restante = this.acerto.valor_colaborador;
+                    this.acerto.total = this.contrato.valor;
+                    this.acerto.data_de_emissao = this.dataBase();
+                    this.acerto.created_at = this.dataBase();
+                    this.acerto.updated_at = this.dataBase();
+                    this.acerto.contrato_id = this.contrato.id;
+                    this.acerto.user_id = this.contrato.user_id;
+
+                    //pre-datos recebimento
+                    this.receber.restante = this.contrato.valor;
+                    this.receber.total = this.contrato.valor;
+                    this.receber.data_de_vencimento = this.contrato.data_de_vencimento;
+                    this.receber.data_de_emissao = this.dataBase();
+                    this.receber.created_at = this.dataBase();
+                    this.receber.updated_at = this.dataBase();
+                    this.receber.contrato_id = this.contrato.id;
+                    this.receber.user_id = this.contrato.user_id;
 
                     const query = {
                         empresa_id: this.$props.query.empresa_id,
@@ -439,7 +595,9 @@ export default {
                     Inertia.put(this.route('contrato.aprovar', query),
                     {
                         query,
-                        contrato: this.contrato
+                        contrato: this.contrato,
+                        acerto: this.acerto,
+                        receber: this.receber,
                     },
                     {
                         preserveState: true,
@@ -457,39 +615,6 @@ export default {
                         },
                         onError: (errors) => {
                             this.showMessage('Erro', 'Contrato Não Foi Salvo', false);
-                            console.log(errors);
-                        },
-                    });
-        },
-        cancelar() {
-                    this.contrato.updated_at = this.dataBase();
-                    this.contrato.data_de_emissao = this.$props.contratoCreated.data_de_emissao;
-                    this.contrato.created_at = this.$inertia.page.props.contratoCreated.created_at.split('.')[0];
-
-                    const query = {
-                        empresa_id: this.$props.query.empresa_id,
-                        user_id: this.contrato.user_id,
-                        contrato_id: this.contrato.id,
-                    };
-
-                    Inertia.put(this.route('contrato.cancelar', query),
-                    {
-                        query,
-                        contrato: this.contrato
-                    },
-                    {
-                        preserveState: true,
-                        onSuccess: (page) => {
-                            console.log('update contrato aprovar', page.props);
-                            this.contrato = page.props.contratoEdit;
-                            this.contrato.data_de_emissao =  moment(page.props.contratoEdit.data_de_emissao).format('DD/MM/YYYY h:mm:ss');
-                            this.contrato.data_de_fechamento = page.props.contratoEdit.data_de_fechamento && moment(page.props.contratoEdit.data_de_fechamento).format('DD/MM/YYYY h:mm:ss');
-                            this.correntista =  page.props.correntistaEdit;
-                            this.colaborador = page.props.colaboradorEdit;
-                            this.colaboradores = page.props.colaboradoresAll;
-                            this.correntistas = page.props.correntistasAll;
-                        },
-                        onError: (errors) => {
                             console.log(errors);
                         },
                     });

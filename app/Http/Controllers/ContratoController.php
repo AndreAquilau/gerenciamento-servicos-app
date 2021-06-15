@@ -9,6 +9,7 @@ use Inertia\Inertia;
 use Illuminate\Support\Facades\DB;
 use Redirect;
 use App\Models\Acerto;
+use App\Models\Recebe;
 
 class ContratoController extends Controller
 {
@@ -109,18 +110,24 @@ class ContratoController extends Controller
         ];
 
         $contrato = [
-            "acerto_id" => $data->contrato_acerto_id,
-            "acerto_pago"=>  $data->contrato_acerto_pago,
-            "colaborador_id"=>  $data->contrato_colaborador_id,
-            "correntista_id"=>  $data->contrato_correntista_id,
+            "id"=>  $data->contrato_id,
             "data_de_emissao"=>  $data->contrato_data_de_emissao,
             "data_de_fechamento"=>  $data->contrato_data_de_fechamento,
-            "descricao_do_servico"=>  $data->contrato_descricao_do_servico,
-            "id"=>  $data->contrato_id,
-            "percentual_comissao_colaborador"=>  $data->contrato_percentual_comissao_colaborador,
+            "data_de_vencimento"=>  $data->contrato_data_de_vencimento,
             "status"=>  $data->contrato_status,
-            "user_id"=>  $data->contrato_user_id,
             "valor"=>  $data->contrato_valor,
+            "valor_avista"=>  $data->contrato_valor_avista,
+            "valor_parcelado"=>  $data->contrato_valor_parcelado,
+            "quantidade_parcela"=>  $data->contrato_quantidade_parcela,
+            "desconto"=>  $data->contrato_desconto,
+            "acrescimo"=>  $data->contrato_acrescimo,
+            "descricao_do_servico"=>  $data->contrato_descricao_do_servico,
+            "percentual_comissao_colaborador"=>  $data->contrato_percentual_comissao_colaborador,
+            "created_at"=>  $data->contrato_created_at,
+            "updated_at"=>  $data->contrato_updated_at,
+            "user_id"=>  $data->contrato_user_id,
+            "colaborador_id"=>  $data->contrato_colaborador_id,
+            "correntista_id"=>  $data->contrato_correntista_id,
         ];
 
         return $this->view("Contrato/Show", [
@@ -144,13 +151,19 @@ class ContratoController extends Controller
             'contratos.id AS contrato_id',
             'contratos.data_de_fechamento AS contrato_data_de_fechamento',
             'contratos.data_de_emissao AS contrato_data_de_emissao',
+            'contratos.data_de_vencimento AS contrato_data_de_vencimento',
             'contratos.status AS contrato_status',
-            'contratos.descricao_do_servico AS contrato_descricao_do_servico',
             'contratos.valor AS contrato_valor',
-            'contratos.acerto_pago AS contrato_acerto_pago',
+            'contratos.valor_avista AS contrato_valor_avista',
+            'contratos.valor_parcelado AS contrato_valor_parcelado',
+            'contratos.quantidade_parcela AS contrato_quantidade_parcela',
+            'contratos.desconto AS contrato_desconto',
+            'contratos.acrescimo AS contrato_acrescimo',
+            'contratos.descricao_do_servico AS contrato_descricao_do_servico',
             'contratos.percentual_comissao_colaborador AS contrato_percentual_comissao_colaborador',
+            'contratos.created_at AS contrato_created_at',
+            'contratos.updated_at AS contrato_updated_at',
             'contratos.user_id AS contrato_user_id',
-            'contratos.acerto_id AS contrato_acerto_id',
             'contratos.colaborador_id AS contrato_colaborador_id',
             'contratos.correntista_id AS contrato_correntista_id',
             'colaboradors.id AS colaborador_id',
@@ -203,13 +216,19 @@ class ContratoController extends Controller
             'contratos.id AS contrato_id',
             'contratos.data_de_fechamento AS contrato_data_de_fechamento',
             'contratos.data_de_emissao AS contrato_data_de_emissao',
+            'contratos.data_de_vencimento AS contrato_data_de_vencimento',
             'contratos.status AS contrato_status',
-            'contratos.descricao_do_servico AS contrato_descricao_do_servico',
             'contratos.valor AS contrato_valor',
-            'contratos.acerto_pago AS contrato_acerto_pago',
+            'contratos.valor_avista AS contrato_valor_avista',
+            'contratos.valor_parcelado AS contrato_valor_parcelado',
+            'contratos.quantidade_parcela AS contrato_quantidade_parcela',
+            'contratos.desconto AS contrato_desconto',
+            'contratos.acrescimo AS contrato_acrescimo',
+            'contratos.descricao_do_servico AS contrato_descricao_do_servico',
             'contratos.percentual_comissao_colaborador AS contrato_percentual_comissao_colaborador',
+            'contratos.created_at AS contrato_created_at',
+            'contratos.updated_at AS contrato_updated_at',
             'contratos.user_id AS contrato_user_id',
-            'contratos.acerto_id AS contrato_acerto_id',
             'contratos.colaborador_id AS contrato_colaborador_id',
             'contratos.correntista_id AS contrato_correntista_id',
             'colaboradors.id AS colaborador_id',
@@ -291,18 +310,24 @@ class ContratoController extends Controller
         $body = $request['contrato'];
 
         $contrato = Contrato::create([
-            'data_de_fechamento' => $body['data_de_fechamento'],
-            'data_de_emissao' => $body['data_de_emissao'],
-            'status' => $body['status'],
-            'descricao_do_servico' => $body['descricao_do_servico'],
-            'created_at' => $body['data_de_emissao'],
-            'updated_at' => $body['data_de_emissao'],
-            'valor' =>  $body['valor'],
-            'acerto_pago' =>  $body['acerto_pago'],
-            'percentual_comissao_colaborador' =>  $body['percentual_comissao_colaborador'],
-            'colaborador_id' =>  $body['colaborador_id'],
-            'correntista_id' => $body['correntista_id'],
-            'user_id' => $body['user_id'],
+            "id"=>  $body['id'],
+            "data_de_emissao"=>  $body['data_de_emissao'],
+            "data_de_fechamento"=>  $body['data_de_fechamento'],
+            "data_de_vencimento"=> $body['data_de_vencimento'],
+            "status"=>  $body['status'],
+            "valor"=>  $body['valor'],
+            "valor_avista"=>  $body['valor_avista'],
+            "valor_parcelado"=>  $body['valor_parcelado'],
+            "quantidade_parcela"=>  $body['quantidade_parcela'],
+            "desconto"=>  $body['desconto'],
+            "acrescimo"=>  $body['acrescimo'],
+            "descricao_do_servico"=>  $body['descricao_do_servico'],
+            "percentual_comissao_colaborador"=> $body['percentual_comissao_colaborador'],
+            "created_at"=>  $body['created_at'],
+            "updated_at"=>  $body['updated_at'],
+            "user_id"=>  $body['user_id'],
+            "colaborador_id"=>  $body['colaborador_id'],
+            "correntista_id"=>  $body['correntista_id'],
         ]);
 
         $colaboradores = $this->findAllColaboradorByEmpresa($query);
@@ -359,32 +384,15 @@ class ContratoController extends Controller
         DB::transaction(function () use ($body) {
             $query = $body['query'];
 
-            $contratoUpdate = $body['contrato'];
+            $contrato = $body['contrato'];
+            $receber = $body["receber"];
 
-            $valor_empresa = ($contratoUpdate['valor'] * ((100.00 - $contratoUpdate['percentual_comissao_colaborador'])/100));
-            $valor_colaborador = ($contratoUpdate['valor'] * (($contratoUpdate['percentual_comissao_colaborador'])/100));
-            $total = $contratoUpdate['valor'];
+            Recebe::create($receber);
 
-            $acerto = Acerto::create([
-                "valor_colaborador" => $valor_colaborador,
-                "valor_empresa" => $valor_empresa,
-                "pago" => 0.00,
-                "total" => $total,
-                "status" => false,
-                "restante" => $valor_colaborador,
-                "user_id" => $query["user_id"],
-                "contrato_id" => $contratoUpdate['id'],
-                "data_de_pagamento" => null,
-                "created_at" => $contratoUpdate['data_de_fechamento'],
-                "updated_at" => $contratoUpdate['data_de_fechamento'],
-            ]);
+            $contrato["data_de_fechamento"] = $contrato['data_de_fechamento'];
 
-            $contratoUpdate["acerto_id"] = $acerto["id"];
-
-            $contratoUpdate["data_de_fechamento"] = $contratoUpdate['updated_at'];
-
-            $update_contrato = Contrato::where('id', '=', $contratoUpdate['id'])
-            ->update($contratoUpdate);
+            Contrato::where('id', '=', $contrato['id'])
+            ->update($contrato);
 
         });
 
@@ -401,64 +409,19 @@ class ContratoController extends Controller
         DB::transaction(function () use ($body) {
             $query = $body['query'];
 
-            $contratoUpdate = $body['contrato'];
-            $acertoCreate = $body['acerto'];
+            $contrato = $body['contrato'];
+            $receber = $body["receber"];
 
-            $valor_empresa = ($contratoUpdate['valor'] * ((100.00 - $contratoUpdate['percentual_comissao_colaborador'])/100));
-            $valor_colaborador = ($contratoUpdate['valor'] * (($contratoUpdate['percentual_comissao_colaborador'])/100));
-            $total = $contratoUpdate['valor'];
+            Recebe::create($receber);
 
-            $acerto = Acerto::create([
-                "valor_colaborador" => $valor_colaborador,
-                "valor_empresa" => $valor_empresa,
-                "pago" => 0.00,
-                "restante" => $valor_colaborador,
-                "total" => $total,
-                "status" => false,
-                "user_id" => $query["user_id"],
-                "contrato_id" => $contratoUpdate['id'],
-                "data_de_pagamento" => null,
-                "created_at" => $acertoCreate['created_at'],
-                "updated_at" => $acertoCreate['updated_at'],
-            ]);
-
-            $contratoUpdate["acerto_id"] = $acerto["id"];
-            $contratoUpdate["data_de_fechamento"] =  $acertoCreate['updated_at'];
-
-            $update_contrato = Contrato::where('id', '=', $contratoUpdate['id'])
-            ->update($contratoUpdate);
+            Contrato::where('id', '=', $contrato['id'])
+            ->update($contrato);
 
         });
 
 
         return Redirect::route('contrato.edit',['empresa_id' => $query['empresa_id'], "user_id" => $query['user_id'], "contrato_id" => $query["contrato_id"] ]);
 
-    }
-
-    public function cancelar()
-    {
-        $body = json_decode(file_get_contents('php://input'), true);
-        $query = $body['query'];
-
-        DB::transaction(function () use ($body) {
-            $query = $body['query'];
-
-            $contratoUpdate = $body['contrato'];
-
-            Acerto::where('contrato_id', '=', $contratoUpdate["id"])->delete();
-
-            $contratoUpdate["acerto_id"] = null;
-            $contratoUpdate["acerto_pago"] = null;
-            $contratoUpdate["data_de_fechamento"] = null;
-            $contratoUpdate["status"] = false;
-
-
-            $update_contrato = Contrato::where('id', '=', $contratoUpdate['id'])
-            ->update($contratoUpdate);
-
-        });
-
-        return Redirect::route('contratos',['empresa_id' => $query['empresa_id'], "user_id" => $query['user_id'] ]);
     }
 
     public function cancelarEdit()
@@ -471,13 +434,8 @@ class ContratoController extends Controller
 
             $contratoUpdate = $body['contrato'];
 
+            Recebe::where('contrato_id', '=', $contratoUpdate["id"])->delete();
             Acerto::where('contrato_id', '=', $contratoUpdate["id"])->delete();
-
-            $contratoUpdate["acerto_id"] = null;
-            $contratoUpdate["acerto_pago"] = null;
-            $contratoUpdate["data_de_fechamento"] = null;
-            $contratoUpdate["status"] = false;
-
 
             $update_contrato = Contrato::where('id', '=', $contratoUpdate['id'])
             ->update($contratoUpdate);
@@ -539,20 +497,25 @@ class ContratoController extends Controller
         ];
 
         $contrato = [
-            "acerto_id" => $data->contrato_acerto_id,
-            "acerto_pago"=>  $data->contrato_acerto_pago,
-            "colaborador_id"=>  $data->contrato_colaborador_id,
-            "correntista_id"=>  $data->contrato_correntista_id,
+            "id"=>  $data->contrato_id,
             "data_de_emissao"=>  $data->contrato_data_de_emissao,
             "data_de_fechamento"=>  $data->contrato_data_de_fechamento,
-            "descricao_do_servico"=>  $data->contrato_descricao_do_servico,
-            "id"=>  $data->contrato_id,
-            "percentual_comissao_colaborador"=>  $data->contrato_percentual_comissao_colaborador,
+            "data_de_vencimento"=>  $data->contrato_data_de_vencimento,
             "status"=>  $data->contrato_status,
-            "user_id"=>  $data->contrato_user_id,
             "valor"=>  $data->contrato_valor,
+            "valor_avista"=>  $data->contrato_valor_avista,
+            "valor_parcelado"=>  $data->contrato_valor_parcelado,
+            "quantidade_parcela"=>  $data->contrato_quantidade_parcela,
+            "desconto"=>  $data->contrato_desconto,
+            "acrescimo"=>  $data->contrato_acrescimo,
+            "descricao_do_servico"=>  $data->contrato_descricao_do_servico,
+            "percentual_comissao_colaborador"=>  $data->contrato_percentual_comissao_colaborador,
+            "created_at"=>  $data->contrato_created_at,
+            "updated_at"=>  $data->contrato_updated_at,
+            "user_id"=>  $data->contrato_user_id,
+            "colaborador_id"=>  $data->contrato_colaborador_id,
+            "correntista_id"=>  $data->contrato_correntista_id,
         ];
-
         return $this->view("Contrato/Show", [
             "colaboradorEdit" => $colaborador,
             "contratoEdit" => $contrato,

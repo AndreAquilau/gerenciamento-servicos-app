@@ -70,13 +70,19 @@ class AcertoController extends Controller
             'contratos.id AS contrato_id',
             'contratos.data_de_fechamento AS contrato_data_de_fechamento',
             'contratos.data_de_emissao AS contrato_data_de_emissao',
+            'contratos.data_de_vencimento AS contrato_data_de_vencimento',
             'contratos.status AS contrato_status',
-            'contratos.descricao_do_servico AS contrato_descricao_do_servico',
             'contratos.valor AS contrato_valor',
-            'contratos.acerto_pago AS contrato_acerto_pago',
+            'contratos.valor_avista AS contrato_valor_avista',
+            'contratos.valor_parcelado AS contrato_valor_parcelado',
+            'contratos.quantidade_parcela AS contrato_quantidade_parcela',
+            'contratos.desconto AS contrato_desconto',
+            'contratos.acrescimo AS contrato_acrescimo',
+            'contratos.descricao_do_servico AS contrato_descricao_do_servico',
             'contratos.percentual_comissao_colaborador AS contrato_percentual_comissao_colaborador',
+            'contratos.created_at AS contrato_created_at',
+            'contratos.updated_at AS contrato_updated_at',
             'contratos.user_id AS contrato_user_id',
-            'contratos.acerto_id AS contrato_acerto_id',
             'contratos.colaborador_id AS contrato_colaborador_id',
             'contratos.correntista_id AS contrato_correntista_id',
             'colaboradors.id AS colaborador_id',
@@ -112,17 +118,20 @@ class AcertoController extends Controller
             'acertos.pago AS acerto_pago',
             'acertos.restante AS acerto_restante',
             'acertos.total AS acerto_total',
+            'acertos.desconto AS acerto_desconto',
+            'acertos.acrescimo AS acerto_acrescimo',
             'acertos.status AS acerto_status',
             'acertos.data_de_pagamento AS acerto_data_de_pagamento',
+            'acertos.data_de_emissao AS acerto_data_de_emissao',
             'acertos.created_at AS acerto_created_at',
             'acertos.updated_at AS acerto_updated_at',
             'acertos.user_id AS acerto_user_id',
-            'acertos.contrato_id AS acerto_contrato_id',
+            'acertos.recebe_id AS acerto_recebe_id',
+            'acertos.contrato_id AS acerto_contrato_id'
         )
         ->where([
             ['empresas.id', '=', $query['empresa_id']],
         ])
-        ->orderBy('acertos.created_at', 'desc')
         ->get();
 
         return $acertos;

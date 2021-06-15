@@ -69,10 +69,27 @@ export default {
                 preserveState: true,
                 onSuccess: (page) => {
                     console.log("beforeCreate", page);
-                    this.contratoData.datasets[0].data[0] = page.props.contratosAprovados.length;
-                    this.contratoData.datasets[0].data[1] = page.props.contratosPendentes.length;
-                    this.acertoData.datasets[0].data[0] = page.props.comissoesPagas.length;
-                    this.acertoData.datasets[0].data[1] = page.props.comissoesAPagar.length;
+
+                    if(page.props.contratosAprovados.length > 0 | page.props.contratosPendentes.length > 0){
+
+                        this.contratoData.datasets[0].data[0] = page.props.contratosAprovados.length;
+                        this.contratoData.datasets[0].data[1] = page.props.contratosPendentes.length;
+                    } else {
+
+                        this.contratoData.datasets[0].data[0] = 50;
+                        this.contratoData.datasets[0].data[1] = 0;
+                    }
+
+                    if(page.props.comissoesPagas.length > 0 | page.props.comissoesAPagar.length > 0){
+
+                        this.acertoData.datasets[0].data[0] = page.props.comissoesPagas.length;
+                        this.acertoData.datasets[0].data[1] = page.props.comissoesAPagar.length;
+                    } else {
+
+                        this.acertoData.datasets[0].data[0] = 50;
+                        this.acertoData.datasets[0].data[1] = 0;
+                    }
+
                     Inertia.visit('dashboard', {data: {
                         empresa_id: this.$inertia.page.props.user.empresa_id,
                         user_id: this.$inertia.page.props.user.id,
@@ -86,10 +103,29 @@ export default {
     },
     created() {
         console.log(this.$inertia.page.props)
+
+        /*
         this.contratoData.datasets[0].data[0] = this.$inertia.page.props.contratosAprovados.length;
         this.contratoData.datasets[0].data[1] = this.$inertia.page.props.contratosPendentes.length;
         this.acertoData.datasets[0].data[0] = this.$inertia.page.props.comissoesPagas.length;
         this.acertoData.datasets[0].data[1] = this.$inertia.page.props.comissoesAPagar.length;
+        */
+
+        if(this.$inertia.page.props.contratosAprovados.length > 0 | this.$inertia.page.props.contratosPendentes.length > 0){
+            this.contratoData.datasets[0].data[0] = this.$inertia.page.props.contratosAprovados.length;
+            this.contratoData.datasets[0].data[1] = this.$inertia.page.props.contratosPendentes.length;
+        } else {
+            this.contratoData.datasets[0].data[0] = 50;
+            this.contratoData.datasets[0].data[1] = 0;
+        }
+
+        if(this.$inertia.page.props.comissoesPagas.length > 0 | this.$inertia.page.props.comissoesAPagar.length > 0){
+            this.acertoData.datasets[0].data[0] = this.$inertia.page.props.comissoesPagas.length;
+            this.acertoData.datasets[0].data[1] = this.$inertia.page.props.comissoesAPagar.length;
+        } else {
+            this.acertoData.datasets[0].data[0] = 50;
+            this.acertoData.datasets[0].data[1] = 0;
+        }
     },
     methods: {
     }
