@@ -41,6 +41,7 @@ Route::middleware(['auth:sanctum', 'verified'])->get('/dashboard',  [DashBoardCo
 //COMISSAO
 Route::middleware(['auth:sanctum', 'verified'])->get('/comissoes',  [AcertoController::class, 'renderPage'])->name('comissoes');
 Route::middleware(['auth:sanctum', 'verified'])->put('/comissoes',  [AcertoController::class, 'update'])->name('comissao.update');
+Route::middleware(['auth:sanctum', 'verified'])->put('/comissoe/cancelar',  [AcertoController::class, 'cancelar'])->name('comissao.cancelar');
 
 
 //CORRENTISTA
@@ -103,3 +104,4 @@ Route::middleware(['auth:sanctum', 'verified'])->post('/usuarios', [UserControll
 //RECEBIMENTOS
 Route::middleware(['auth:sanctum', 'verified'])->get('/recebimentos', [RecebeController::class, 'renderPage'] )->name('recebimentos');
 Route::middleware(['auth:sanctum', 'verified'])->put('/recebimentos', [RecebeController::class, 'update'] )->name('recebimento.update');
+//Route::middleware(['auth:sanctum', 'verified'])->put('/recebimento/cancelar', [RecebeController::class, 'cancelar'] )->name('recebimento.update');

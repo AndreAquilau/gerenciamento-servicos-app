@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Contrato;
+use App\Models\Acerto;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Redirect;
 
 class ComissaoController extends Controller
 {
@@ -32,6 +34,21 @@ class ComissaoController extends Controller
         ->where('valor', '>', '0.00');
 
         return ['comissoes' => $comissoes];
+    }
+
+    public function cancelar()
+    {
+        $body = json_decode(file_get_contents('php://input'), true);
+
+        $query = $body["query"];
+
+        $acerto=  $body["acerto"];
+
+        Acerto::where("id", "=", $acerto["acerto_id"])
+        ->where("contrato_id", "=", $acerto["acerto_contrato_id"])
+        ->update($acerto);
+
+        return Redirect::route('comissoes',['empresa_id' => $query['empresa_id'], "user_id" => $query['user_id'] ]);
     }
 
     /**

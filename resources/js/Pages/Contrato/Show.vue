@@ -167,7 +167,7 @@
         <Dialog v-model:visible="gerarComissaoDialog" :style="{width: '450px'}" header="Confirme" :modal="true">
             <div class="confirmation-content">
                 <i class="pi pi-exclamation-triangle p-mr-3" style="font-size: 2rem" /><br>
-                <span >Deseja gerar a comissão do contrato?</span>
+                <span >Deseja gerar o recebimento</span>
             </div>
             <template #footer>
                 <Button label="Não" icon="pi pi-times" class="p-button-text" @click="hideGerarComissaoDialog()"/>
@@ -178,7 +178,7 @@
             <div class="confirmation-content">
                 <i class="pi pi-exclamation-triangle p-mr-3" style="font-size: 2rem" /><br>
                 <span >Deseja realmente cancelar o contrato?</span><br>
-                <span>As comissões pagas serão excluídas!</span>
+                <span>As comissões pagas e recebimentos serão excluídas!</span>
             </div>
             <template #footer>
                 <Button label="Não" icon="pi pi-times" class="p-button-text" @click="hideCancelarComissaoDialog()"/>

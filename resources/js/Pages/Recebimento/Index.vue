@@ -95,10 +95,16 @@
             </div>
             <div class="card">
                 <DataTable :value="[recebimento]" editMode="cell" class="editable-cells-table" responsiveLayout="scroll">
-                    <Column field="recebe_contrato_id" header="Contrato" style="width:15%"></Column>
+                    <Column field="recebe_contrato_id" header="Contrato" style="width:15%">
+                        <template #body="slotProps">
+                            {{`${("00000000" + slotProps.data.contrato_id).slice(-8)}`}}
+                        </template>
+                    </Column>
                     <Column field="correntista_nome" header="Correntista" style="width:20%"></Column>
                     <Column field="recebe_total" header="Total" style="width:15%">
-                         <InputNumber v-model="slotProps.data[slotProps.column.props.field]" prefix="R$ "  mode="decimal" :minFractionDigits="2" :maxFractionDigits="2"/>
+                        <template #editor="slotProps">
+                            <InputNumber v-model="slotProps.data[slotProps.column.props.field]" prefix="R$ "  mode="decimal" :minFractionDigits="2" :maxFractionDigits="2"/>
+                        </template>
                     </Column>
                 </DataTable>
             </div>

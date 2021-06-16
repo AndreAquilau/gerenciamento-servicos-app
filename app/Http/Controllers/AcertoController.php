@@ -56,6 +56,21 @@ class AcertoController extends Controller
 
     }
 
+    public function cancelar()
+    {
+        $body = json_decode(file_get_contents('php://input'), true);
+
+        $query = $body["query"];
+
+        $acerto=  $body["acerto"];
+
+        Acerto::where("id", "=", $acerto["id"])
+        ->where("contrato_id", "=", $acerto["contrato_id"])
+        ->update($acerto);
+
+        return Redirect::route('comissoes',['empresa_id' => $query['empresa_id'], "user_id" => $query['user_id'] ]);
+    }
+
     public function findAllByEmpresaAcerto($query) {
 
         $body = json_decode(file_get_contents('php://input'), true);

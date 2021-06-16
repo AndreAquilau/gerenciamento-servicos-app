@@ -141,6 +141,7 @@
             </div>
             <template #footer>
                 <Button label="Voltar" icon="pi pi-times" class="p-button-text" @click="hideDialog"/>
+                <Button icon="pi pi-check" label="Cancelar" class="p-button-danger" @click="cancelarPagamento()"  v-show="acerto.acerto_status"/>
                 <Button v-show="!acerto.acerto_status" label="Pagar" icon="pi pi-check" class="p-button-text" @click="saveAcerto()" />
             </template>
         </Dialog>
@@ -342,6 +343,44 @@ export default {
         console.log(this.$inertia.page.props.user);
     },
     methods: {
+        cancelarPagamento(){
+
+            const acerto = {};
+
+            acerto.valor_colaborador = Number(this.acerto.acerto_total) * (this.acerto.contrato_percentual_comissao_colaborador/100);
+            acerto.valor_empresa = (this.acerto.acerto_total * ((100.00 - this.acerto.contrato_percentual_comissao_colaborador)/100));
+            acerto.pago = 0.00;
+            acerto.restante = acerto.valor_colaborador;
+            acerto.contrato_id = this.acerto.acerto_contrato_id;
+            acerto.id = this.acerto.acerto_id;
+            acerto.data_de_pagamento = null;
+            acerto.status = false;
+            acerto.updated_at = this.dataBase();
+
+
+
+            console.log("update acerto",acerto)
+
+            Inertia.put(route('comissao.cancelar', this.$props.query), {
+                query: {
+                    empresa_id: this.$inertia.page.props.user.empresa_id,
+                    user_id: this.$inertia.page.props.user.id,
+                },
+                acerto: acerto,
+            },
+            {
+                errorBag: 'updateProfileInformation',
+                preserveScroll: true,
+                onSuccess: (page) => {
+                    console.log("props", page.props);
+                    this.acertos = page.props.acertosAll;
+                    console.log(this.acertos);
+                    this.showMessage("Sucesso", "Acerto Pago");
+                    this.acertoDialog = false;
+                    this.resetAcerto();
+                },
+            });
+        },
         initFilters() {
             this.filters = {
                 'global': {value: null, matchMode: FilterMatchMode.CONTAINS},
