@@ -58,16 +58,16 @@
                     <InputText id="telefone" v-model.trim="colaborador.telefone" autofocus />
                 </div>
                 <div class="p-field">
-                    <label for="bairro">Bairro</label>
-                    <InputText id="bairro" v-model.trim="colaborador.bairro" autofocus />
-                </div>
-                <div class="p-field">
                     <label for="rua">Rua</label>
                     <InputText id="rua" v-model.trim="colaborador.rua" autofocus />
                 </div>
                 <div class="p-field">
                     <label for="numero">Número</label>
                     <InputText id="numero" v-model.trim="colaborador.numero" autofocus />
+                </div>
+                <div class="p-field">
+                    <label for="bairro">Bairro</label>
+                    <InputText id="bairro" v-model.trim="colaborador.bairro" autofocus />
                 </div>
                 <div class="p-field">
                     <label for="cidade">Cidade</label>

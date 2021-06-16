@@ -63,16 +63,16 @@
                     <InputText id="telefone" v-model.trim="correntista.telefone" autofocus />
                 </div>
                 <div class="p-field">
-                    <label for="bairro">Bairro</label>
-                    <InputText id="bairro" v-model.trim="correntista.bairro" autofocus />
-                </div>
-                <div class="p-field">
                     <label for="rua">Rua</label>
                     <InputText id="rua" v-model.trim="correntista.rua" autofocus />
                 </div>
                 <div class="p-field">
                     <label for="numero">Número</label>
                     <InputText id="numero" v-model.trim="correntista.numero" autofocus />
+                </div>
+                <div class="p-field">
+                    <label for="bairro">Bairro</label>
+                    <InputText id="bairro" v-model.trim="correntista.bairro" autofocus />
                 </div>
                 <div class="p-field">
                     <label for="cidade">Cidade</label>
