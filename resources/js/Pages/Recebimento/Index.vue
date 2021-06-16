@@ -128,6 +128,7 @@
             </div>
             <template #footer>
                 <Button label="Voltar" icon="pi pi-times" class="p-button-text" @click="hideDialog()"/>
+                <Button icon="pi pi-check" label="Cancelar" class="p-button-danger" @click="cancelamentoRecebimento()"  v-show="recebimento.recebe_status"/>
                 <Button v-show="!recebimento.recebe_status" label="Pagar" icon="pi pi-check" class="p-button-text" @click="saveRecebimento()" />
             </template>
         </Dialog>
@@ -330,6 +331,39 @@ export default {
         console.log(this.$inertia.page.props.user);
     },
     methods: {
+        cancelamentoRecebimento() {
+            const recebimento = {};
+
+            //pre-dados recebimento
+            recebimento.recebe_pago = 0.00;
+            recebimento.recebe_id = this.recebimento.recebe_id;
+            recebimento.recebe_restante = this.recebimento.recebe_total;
+            recebimento.recebe_updated_at = this.dataBase();
+            recebimento.recebe_status = false;
+            recebimento.data_de_pagamento = null;
+
+
+            Inertia.put(route('recebimento.cancelar', this.$props.query), {
+                query: {
+                    empresa_id: this.$inertia.page.props.user.empresa_id,
+                    user_id: this.$inertia.page.props.user.id,
+
+                },
+                recebimento,
+            },
+            {
+                errorBag: 'updateProfileInformation',
+                preserveScroll: true,
+                onSuccess: (page) => {
+                    console.log("props", page.props);
+                    this.recebimentos = page.props.recebimentosAll;
+                    console.log(this.acertos);
+                    this.showMessage("Sucesso", "Recebimento  Pago");
+                    this.recebimentoDialog = false;
+                    this.resetRecebimento();
+                },
+            });
+        },
         initFilters() {
             this.filters = {
                 'global': {value: null, matchMode: FilterMatchMode.CONTAINS},
@@ -423,7 +457,6 @@ export default {
                 query: {
                     empresa_id: this.$inertia.page.props.user.empresa_id,
                     user_id: this.$inertia.page.props.user.id,
-
                 },
                 recebimento,
                 acerto,

@@ -104,4 +104,4 @@ Route::middleware(['auth:sanctum', 'verified'])->post('/usuarios', [UserControll
 //RECEBIMENTOS
 Route::middleware(['auth:sanctum', 'verified'])->get('/recebimentos', [RecebeController::class, 'renderPage'] )->name('recebimentos');
 Route::middleware(['auth:sanctum', 'verified'])->put('/recebimentos', [RecebeController::class, 'update'] )->name('recebimento.update');
-//Route::middleware(['auth:sanctum', 'verified'])->put('/recebimento/cancelar', [RecebeController::class, 'cancelar'] )->name('recebimento.update');
+Route::middleware(['auth:sanctum', 'verified'])->put('/recebimento/cancelar', [RecebeController::class, 'cancelar'] )->name('recebimento.cancelar');

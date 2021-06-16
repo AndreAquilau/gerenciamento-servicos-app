@@ -357,8 +357,6 @@ export default {
             acerto.status = false;
             acerto.updated_at = this.dataBase();
 
-
-
             console.log("update acerto",acerto)
 
             Inertia.put(route('comissao.cancelar', this.$props.query), {

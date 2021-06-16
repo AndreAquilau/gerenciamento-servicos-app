@@ -224,6 +224,33 @@ class RecebeController extends Controller
         return $this->view("Recebimento/Index", ["query" => $query, "recebimentosAll" => $recebementos]);
     }
 
+    public function cancelar()
+    {
+
+
+        $body = json_decode(file_get_contents('php://input'), true);
+
+        $query = $body["query"];
+
+        DB::transaction(function () use ($body) {
+
+            $receber =  $body["recebimento"];
+
+            Recebe::where('id', '=', $receber['recebe_id'])
+            ->update([
+                "pago" => $receber['recebe_pago'],
+                "restante" => $receber['recebe_restante'],
+                "updated_at" => $receber['recebe_updated_at'],
+                "status" => $receber['recebe_status'],
+                "data_de_pagamento" => null,
+            ]);
+
+            Acerto::where("recebe_id", "=", $receber['recebe_id'])->delete();
+        });
+        return Redirect::route('recebimentos',['empresa_id' => $query['empresa_id'], "user_id" => $query['user_id'] ]);
+
+    }
+
     /**
      * Remove the specified resource from storage.
      *
